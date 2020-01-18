@@ -44,7 +44,7 @@ services:
     networks:
       - local
   api:
-    build: ./api
+    build: ../api
     image: core-api:latest
     ports:
       - 1337:1337
@@ -57,10 +57,10 @@ services:
       MONGODB_URL: mongodb://dev:dev@mongodb:27017/core?authSource=admin
     volumes:
       - type: bind
-        source: ./api/api
+        source: ../api/api
         target: /var/app/current/api
       - type: bind
-        source: ./api/config
+        source: ../api/config
         target: /var/app/current/config
     networks:
       - local
@@ -69,7 +69,7 @@ services:
       - "mongodb"
       - "redis"
   web:
-    build: ./web
+    build: ../web
     image: core-web:latest
     ports:
       - 3000:3000
@@ -77,10 +77,10 @@ services:
       REACT_APP_API_URL: http://api.core.local
     volumes:
       - type: bind
-        source: ./web/src
+        source: ../web/src
         target: /var/app/current/src
       - type: bind
-        source: ./web/public
+        source: ../web/public
         target: /var/app/current/public
     networks:
       - local
