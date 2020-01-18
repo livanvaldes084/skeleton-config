@@ -47,21 +47,16 @@ services:
     build: ../api
     image: core-api:latest
     ports:
-      - 1337:1337
-      - 9337:9337
+      - 3051:3051
+      - 5058:5058
     environment:
-      PORT: 1337
-      DEBUG_PORT: 9337
+      PORT: 3051
+      DEBUG_PORT: 5058
       WAIT_HOSTS: rabbitmq:5672,mongodb:27017,redis:6379
       NODE_ENV: development
       MONGODB_URL: mongodb://dev:dev@mongodb:27017/core?authSource=admin
     volumes:
-      - type: bind
-        source: ../api/api
-        target: /var/app/current/api
-      - type: bind
-        source: ../api/config
-        target: /var/app/current/config
+      - ../api:/var/app/current/api
     networks:
       - local
     depends_on:
@@ -91,7 +86,7 @@ services:
     image: nginx-wait:latest
     restart: on-failure
     environment:
-      WAIT_HOSTS: api:1337,web:3000
+      WAIT_HOSTS: api:3051,web:3000
     volumes:
       - type: bind
         source: ./nginx/conf.d
@@ -108,7 +103,7 @@ services:
       - "web"
 networks:
   local:
-    driver: overlay
+    driver: bridge
 
 volumes:
   rabbitmq:
