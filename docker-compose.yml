@@ -23,7 +23,6 @@ services:
         target: /data
     ports:
       - "6379:6379"
-    command: redis-server --appendonly yes
     networks:
       - local
   mongodb:
@@ -46,6 +45,7 @@ services:
   api:
     build: ../api
     image: core-api:latest
+    restart: on-failure
     ports:
       - 3051:3051
       - 5058:5058
@@ -56,7 +56,12 @@ services:
       NODE_ENV: development
       MONGODB_URL: mongodb://dev:dev@mongodb:27017/core?authSource=admin
     volumes:
-      - ../api:/var/app/current/api
+      - type: bind
+        source: ../api
+        target: /var/app/current/api
+      - type: bind
+        source: ./node_modules
+        target: /var/app/current/api/node_modules
     networks:
       - local
     depends_on:
@@ -66,17 +71,18 @@ services:
   web:
     build: ../web
     image: core-web:latest
+    restart: on-failure
     ports:
       - 3000:3000
     environment:
       REACT_APP_API_URL: http://api.core.local
     volumes:
       - type: bind
-        source: ../web/src
-        target: /var/app/current/src
+        source: ../web/
+        target: /var/app/current/web
       - type: bind
-        source: ../web/public
-        target: /var/app/current/public
+        source: ./node_modules
+        target: /var/app/current/web/node_modules
     networks:
       - local
     depends_on:

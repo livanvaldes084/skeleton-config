@@ -3,3 +3,4 @@ log/
 .tmp/
 .app/
 .web/
+node_modules/
